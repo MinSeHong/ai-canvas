@@ -83,7 +83,6 @@ export default function Product() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const panStartRef = useRef({ x: 0, y: 0 });
 
-  // 이미지 로드
   useEffect(() => {
     const img = new Image();
     img.src = "/assets/sample/sample-sam3.png";
@@ -93,7 +92,6 @@ export default function Product() {
     };
   }, []);
 
-  // 캔버스 부모 크기 추적
   useEffect(() => {
     if (!hostRef.current) return;
 
@@ -109,7 +107,6 @@ export default function Product() {
     return () => ro.disconnect();
   }, []);
 
-  // 초기 화면: 이미지 전체 보이도록 fit 후 70%
   useEffect(() => {
     const img = imageRef.current;
     if (!img || !imageLoaded) return;
@@ -131,7 +128,6 @@ export default function Product() {
     hasInitializedViewRef.current = true;
   }, [canvasSize.width, canvasSize.height, imageLoaded]);
 
-  // 캔버스 렌더링 (고해상도 선명도 유지)
   useEffect(() => {
     const canvas = canvasRef.current;
     const img = imageRef.current;
@@ -157,20 +153,15 @@ export default function Product() {
     ctx.restore();
   }, [canvasSize, scale, offset, imageLoaded]);
 
-  // 휠 줌 (마우스 위치 기준)
   const onWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
     e.preventDefault();
-
     const rect = e.currentTarget.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-
     const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
     const nextScale = Math.min(8, Math.max(0.1, scale * zoomFactor));
-
     const worldX = (mouseX - offset.x) / scale;
     const worldY = (mouseY - offset.y) / scale;
-
     setOffset({
       x: mouseX - worldX * nextScale,
       y: mouseY - worldY * nextScale,
@@ -178,7 +169,6 @@ export default function Product() {
     setScale(nextScale);
   };
 
-  // 휠 버튼(가운데) 드래그 시작
   const onMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (e.button !== 1) return;
     e.preventDefault();
@@ -186,7 +176,6 @@ export default function Product() {
     panStartRef.current = { x: e.clientX, y: e.clientY };
   };
 
-  // 드래그 패닝
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       if (!isPanning) return;
@@ -211,7 +200,7 @@ export default function Product() {
 
   return (
     <div className={styles.widget}>
-      <div className={styles["gnb-component"]}>AI Canvas</div>
+      <div className={styles["gnb-component"]}>AI View</div>
 
       <div className={styles.browser}>
         <div className={styles["lnb-component"]}>
